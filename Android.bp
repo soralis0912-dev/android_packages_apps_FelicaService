@@ -1,0 +1,25 @@
+//
+//  Copyright (C) 2026 The 2by2 Project
+//  SPDX-License-Identifier: Apache-2.0
+//
+
+package {
+    default_applicable_licenses: ["Android-Apache-2.0"],
+}
+
+android_app {
+    name: "FelicaService",
+
+    srcs: [
+        "src/**/*.java",
+        "aidl/**/*.aidl",
+    ],
+
+    aidl: {
+        local_include_dirs: ["aidl"],
+    },
+
+    certificate: "platform",
+    platform_apis: true,
+    privileged: true,
+}

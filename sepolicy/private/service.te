@@ -1,0 +1,2 @@
+type felica_service, app_api_service, service_manager_type;
+type felica_aidl_service, system_api_service, service_manager_type;
