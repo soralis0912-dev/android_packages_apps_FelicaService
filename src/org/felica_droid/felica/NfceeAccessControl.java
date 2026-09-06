@@ -40,6 +40,11 @@ import java.util.Map;
  * and the rule is both halves: the caller has to be one of the named packages
  * and be signed by that signer. A package name on its own proves nothing, since
  * the caller hands it to us.
+ *
+ * There is no exemption for the platform signature. The client ships PRESIGNED
+ * and the certificate the stock file names is byte for byte the one on that
+ * apk, so the ordinary path admits it; anything that needed an exemption would
+ * be something FeliCa Networks did not vouch for.
  */
 public class NfceeAccessControl {
 
@@ -72,16 +77,6 @@ public class NfceeAccessControl {
         if (owned == null || !Arrays.asList(owned).contains(pkg)) {
             Log.w(TAG, "uid " + uid + " does not own " + pkg);
             return false;
-        }
-
-        // Anything carrying the platform signature is already part of the
-        // image and as trusted as this service is, so felica_access.xml has
-        // nothing to add for it. This is also what keeps a locally rebuilt
-        // MobileFeliCaClient working: repacking the apk costs it FeliCa
-        // Networks' signature, and that is the only one the stock file names.
-        if (mContext.getPackageManager().checkSignatures("android", pkg)
-                == PackageManager.SIGNATURE_MATCH) {
-            return true;
         }
 
         Signature[] signatures = signaturesOf(pkg);
