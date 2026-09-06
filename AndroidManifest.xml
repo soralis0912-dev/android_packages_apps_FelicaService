@@ -4,7 +4,7 @@
     SPDX-License-Identifier: Apache-2.0
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="jp.project2by2.felica"
+    package="org.felica_droid.felica"
     android:sharedUserId="android.uid.system">
 
     <uses-permission android:name="android.permission.NFC" />

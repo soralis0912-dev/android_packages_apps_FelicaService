@@ -1,1 +1,0 @@
-../../../../../Nfc/aidl/jp/project2by2/felica/IFelica.aidl

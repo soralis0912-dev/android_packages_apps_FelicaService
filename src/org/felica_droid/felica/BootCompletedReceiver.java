@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-package jp.project2by2.felica;
+package org.felica_droid.felica;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

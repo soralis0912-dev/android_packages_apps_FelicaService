@@ -1,2 +1,2 @@
 felica                                              u:object_r:felica_service:s0
-jp.project2by2.felica.IFelica/default               u:object_r:felica_aidl_service:s0
+org.felica_droid.felica.IFelica/default             u:object_r:felica_aidl_service:s0
