@@ -6,6 +6,7 @@
 package org.felica_droid.felica;
 
 import android.app.Application;
+import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -34,12 +35,31 @@ public final class FelicaService extends Application {
     private static volatile IFelica sBackend;
     private static FelicaAdapterImpl sAdapter;
     private static boolean sRegistrationThreadStarted;
+    private static NfceeAccessControl sAccessControl;
 
     @Override
     public void onCreate() {
         super.onCreate();
         Log.i(TAG, "FelicaService started");
+        sAccessControl = new NfceeAccessControl(this);
         startRegistrationThread();
+    }
+
+    /**
+     * The service is registered under app_api_service, so anything on the
+     * device can look it up and every entry point has to check for itself.
+     * The package name is the caller's own claim, which is why the check
+     * covers both halves: that the uid owns the name, and that the signer
+     * behind it is one felica_access.xml vouches for.
+     */
+    private static void enforceAccess(String packageName) {
+        int uid = Binder.getCallingUid();
+        NfceeAccessControl access = sAccessControl;
+        if (access == null || !access.check(uid, packageName)) {
+            Log.e(TAG, "refused " + packageName + " (uid " + uid + ")");
+            throw new SecurityException(
+                    packageName + " (uid " + uid + ") is not in felica_access.xml");
+        }
     }
 
     static synchronized void startRegistrationThread() {
@@ -209,18 +229,21 @@ public final class FelicaService extends Application {
 
         @Override
         public IFelicaSe getFelicaSeInterface(String packageName) {
+            enforceAccess(packageName);
             Log.i(TAG, "getFelicaSeInterface: " + packageName);
             return mSe;
         }
 
         @Override
         public IFelicaRf getFelicaRfInterface(String packageName) {
+            enforceAccess(packageName);
             Log.i(TAG, "getFelicaRfInterface: " + packageName);
             return mRf;
         }
 
         @Override
         public IFelicaAdapterExtra getFelicaAdapterExtraInterface(String packageName) {
+            enforceAccess(packageName);
             Log.i(TAG, "getFelicaAdapterExtraInterface: " + packageName);
             return mExtra;
         }
